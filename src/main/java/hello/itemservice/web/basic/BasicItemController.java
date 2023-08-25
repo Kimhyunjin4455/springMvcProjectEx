@@ -6,10 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.PostConstruct;
 import java.util.List;
@@ -31,7 +28,7 @@ public class BasicItemController {
     @GetMapping
     public String items(Model model){ // 아이템 목록 출력
         List<Item> items = itemRepository.findAll();
-        model.addAttribute("items", items);
+        model.addAttribute("items", items); // 조회해서 넣은 것
         return "basic/items";
     }
 
@@ -48,7 +45,19 @@ public class BasicItemController {
     }
 
     @PostMapping("/add")
-    public String save(){
+    public String save(@RequestParam String itemName,
+                       @RequestParam int price,
+                       @RequestParam Integer quantity,
+                       Model model){ // itemName은 addForm.html의 <input>의 name 속성 값, Integer나 int나 아무 타입 가능
+        Item item = new Item();
+        item.setItemName(itemName)
+        item.setPrice(price);
+        item.setQuantity(quantity);
+
+        itemRepository.save(item);
+
+        model.addAttribute("item",item); // 저장하고 저장된 결과
+
         return "???????????";
     }
 
