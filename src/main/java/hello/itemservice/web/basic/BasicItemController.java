@@ -33,7 +33,7 @@ public class BasicItemController {
     }
 
     @GetMapping("/{itemId}")
-    public String item(@PathVariable long itemId, Model model){ // 여긴 왜 Long아니고 long인지?
+    public String item(@PathVariable long itemId, Model model){ // ??? 여긴 왜 Long아니고 long인지?
         Item item = itemRepository.findById(itemId);
         model.addAttribute("item", item);
         return "basic/item";
@@ -44,13 +44,13 @@ public class BasicItemController {
         return "basic/addForm";
     }
 
-    @PostMapping("/add")
-    public String save(@RequestParam String itemName,
+//    @PostMapping("/add")
+    public String addItemV1(@RequestParam String itemName,
                        @RequestParam int price,
                        @RequestParam Integer quantity,
                        Model model){ // itemName은 addForm.html의 <input>의 name 속성 값, Integer나 int나 아무 타입 가능
         Item item = new Item();
-        item.setItemName(itemName)
+        item.setItemName(itemName);
         item.setPrice(price);
         item.setQuantity(quantity);
 
@@ -58,7 +58,19 @@ public class BasicItemController {
 
         model.addAttribute("item",item); // 저장하고 저장된 결과
 
-        return "???????????";
+        return "basic/item";
+    }
+
+    @PostMapping("/add")
+    public String addItemV2(@ModelAttribute("item") Item item,
+                       Model model){ // itemName은 addForm.html의 <input>의 name 속성 값, Integer나 int나 아무 타입 가능
+        // @ModelAttribute: Item 객체 생성 + 요청 파라미터의 값으로 Item객체의 프로퍼티 찾음 + 해당 프로퍼티의 setter 호출해서 파라미터의 값을 입력
+
+        itemRepository.save(item);
+
+        model.addAttribute("item",item); // 저장하고 저장된 결과
+
+        return "basic/item";
     }
 
     /**
