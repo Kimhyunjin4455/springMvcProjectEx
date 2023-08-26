@@ -61,14 +61,35 @@ public class BasicItemController {
         return "basic/item";
     }
 
-    @PostMapping("/add")
-    public String addItemV2(@ModelAttribute("item") Item item,
-                       Model model){ // itemName은 addForm.html의 <input>의 name 속성 값, Integer나 int나 아무 타입 가능
+    //@PostMapping("/add")
+    public String addItemV2(@ModelAttribute("item") Item item){
         // @ModelAttribute: Item 객체 생성 + 요청 파라미터의 값으로 Item객체의 프로퍼티 찾음 + 해당 프로퍼티의 setter 호출해서 파라미터의 값을 입력
+        // 괄호안의 파라미터 값 바탕으로 뷰에다가도 값전달 해줌
+        // Model도 생략 가능 , 스프링의 외부에서 생성해줌
 
         itemRepository.save(item);
 
-        model.addAttribute("item",item); // 저장하고 저장된 결과
+//        model.addAttribute("item",item); // 자동 추가, 생략 가능
+
+        return "basic/item";
+    }
+
+    //@PostMapping("/add")
+    public String addItemV3(@ModelAttribute Item item, Model model){
+        // @ModelAttribute에 괄호가 없다면 디폴트 값이 '클래스명의 첫번째 글자를 소문자로 바꾼 값'이 된다 Item -> item
+
+        itemRepository.save(item);
+
+
+        return "basic/item";
+    }
+
+    @PostMapping("/add")
+    public String addItemV4(Item item, Model model){
+        // @ModelAttribute 생략 가능 (기본값(int, String, Integer) 타입이 아닌 임의의 객체 타입이기 때문, 기본값 타입이 오면 @RequestParam이 자동 적용)
+
+        itemRepository.save(item);
+
 
         return "basic/item";
     }
