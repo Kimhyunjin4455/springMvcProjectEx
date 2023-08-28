@@ -90,8 +90,13 @@ public class BasicItemController {
 
         itemRepository.save(item);
 
-
         return "basic/item";
+    }
+
+    @PostMapping("/add")
+    public String addItemV5(Item item, Model model){
+        itemRepository.save(item);
+        return "redirect:/basic/items/" + item.getId();
     }
     @GetMapping("/{itemId}/edit")
     public String editForm(@PathVariable Long itemId, Model model){
@@ -105,8 +110,7 @@ public class BasicItemController {
     public String edit(@PathVariable Long itemId, @ModelAttribute Item item){
         itemRepository.update(itemId, item);
         return "redirect:/basic/items/{itemId}";
-
-
+        // 상품 수정은 마지막에 뷰 템플릿을 호출하는 대신에 상품 상세 화면으로 이동하도록 리다이렉트를 호출
     }
 
     /**
