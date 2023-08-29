@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.annotation.PostConstruct;
 import java.util.List;
@@ -69,13 +70,13 @@ public class BasicItemController {
 
         itemRepository.save(item);
 
-//        model.addAttribute("item",item); // 자동 추가, 생략 가능
+//        model.addAttribute("item",item); // 자동 추가, 생략 가능 + Model model도 생략 가능
 
         return "basic/item";
     }
 
     //@PostMapping("/add")
-    public String addItemV3(@ModelAttribute Item item, Model model){
+    public String addItemV3(@ModelAttribute Item item){
         // @ModelAttribute에 괄호가 없다면 디폴트 값이 '클래스명의 첫번째 글자를 소문자로 바꾼 값'이 된다 Item -> item
 
         itemRepository.save(item);
@@ -84,8 +85,8 @@ public class BasicItemController {
         return "basic/item";
     }
 
-    @PostMapping("/add")
-    public String addItemV4(Item item, Model model){
+//    @PostMapping("/add")
+    public String addItemV4(Item item){
         // @ModelAttribute 생략 가능 (기본값(int, String, Integer) 타입이 아닌 임의의 객체 타입이기 때문, 기본값 타입이 오면 @RequestParam이 자동 적용)
 
         itemRepository.save(item);
@@ -93,10 +94,19 @@ public class BasicItemController {
         return "basic/item";
     }
 
-    @PostMapping("/add")
-    public String addItemV5(Item item, Model model){
+//    @PostMapping("/add")
+    public String addItemV5(Item item){
         itemRepository.save(item);
         return "redirect:/basic/items/" + item.getId();
+    }
+
+    @PostMapping("/add")
+    public String addItemV6(Item item, RedirectAttributes redirectAttributes){
+        Item savedItem = itemRepository.save(item);
+        redirectAttributes.addAttribute("itemId", savedItem.getId());
+        redirectAttributes.addAttribute("status", true);
+        return "redirect:/basic/items/{itemId}";
+        // 치환이 가능하면 파라미터값에 넣고 불가능하면(status) 쿼리 파라미터 형식으로 들어감 마지막으로 url인코딩 처리까지 해줌
     }
     @GetMapping("/{itemId}/edit")
     public String editForm(@PathVariable Long itemId, Model model){
